@@ -5,33 +5,64 @@
 #include <iostream>
 
 class BankAccount {
-private:
+protected: // Changed from private to allow derived access
     int accountNumber;
     std::string accountHolder;
     double balance;
+//USE OF AI 8-11 because it was private instead of protected
 
 public:
-
     BankAccount();
     BankAccount(int accNum, std::string holder, double initialBalance);
+    
+//polymorphic cleanup
+    virtual ~BankAccount() {} 
 
-    // rule of three
-    BankAccount(const BankAccount& other);            
-    BankAccount& operator=(const BankAccount& other); 
-    ~BankAccount();                                   
+    virtual void withdraw(double amount); 
+    void deposit(double amount);
 
-    // operator Overloading
-    BankAccount& operator+=(double amount); // Deposit
-    BankAccount& operator-=(double amount); // Withdrawal
-    bool operator==(const BankAccount& other) const;
-    bool operator<(const BankAccount& other) const;
-    bool operator>(const BankAccount& other) const;
-
-    // static utility
-    static void printAccount(const BankAccount& account);
-    static BankAccount createAccountFromInput();
 
     double getBalance() const { return balance; }
+    std::string getHolder() const { return accountHolder; }
+};
+
+//new classes
+
+class CheckingAccount: public BankAccount {
+private:
+    double transactionFee;
+public:
+    CheckingAccount(int accNum, std::string holder, double bal, double fee)
+        : BankAccount(accNum, holder, bal), transactionFee(fee) {}
+
+    // include the fee
+    void withdraw(double amount) override {
+        if (amount + transactionFee <= balance) {
+            balance -= (amount + transactionFee);
+            std::cout << "Withdrew $" << amount << " (Fee: $" << transactionFee << ")\n";
+        } else {
+            std::cout << "Insufficient funds for withdrawal + fee.\n";
+        }
+    }
+};
+
+class SavingsAccount : public BankAccount {
+private:
+    double interestRate;
+public:
+    SavingsAccount(int accNum, std::string holder, double bal, double rate)
+        : BankAccount(accNum, holder, bal), interestRate(rate) {}
+
+    void calculateInterest() {
+        double interest = balance * interestRate;
+        balance += interest;
+        std::cout << "Interest added: $" << interest << "\n";
+    }
+
+    // Savings uses standard withdrawal
+    void withdraw(double amount) override {
+        BankAccount::withdraw(amount);
+    }
 };
 
 #endif

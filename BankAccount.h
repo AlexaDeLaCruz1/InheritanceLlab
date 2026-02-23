@@ -67,11 +67,24 @@ BankAccount BankAccount::createAccountFromInput() {
 
     std::cout << "Enter Account Number: ";
     std::cin >> id;
-    std::cin.ignore(); // Clear newline
+    std::cin.ignore(); 
     std::cout << "Enter Holder Name: ";
     std::getline(std::cin, name);
     std::cout << "Enter Initial Balance: ";
     std::cin >> bal;
 
     return BankAccount(id, name, bal);
+}
+
+//new
+void BankAccount::deposit(double amount) {
+    if (amount > 0) balance += amount;
+}
+
+void BankAccount::withdraw(double amount) {
+    if (amount > 0 && balance >= amount) {
+        balance -= amount;
+    } else {
+        std::cout << "Insufficient funds.\n";
+    }
 }
