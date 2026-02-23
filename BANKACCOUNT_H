@@ -1,0 +1,37 @@
+#ifndef BANKACCOUNT_H
+#define BANKACCOUNT_H
+
+#include <string>
+#include <iostream>
+
+class BankAccount {
+private:
+    int accountNumber;
+    std::string accountHolder;
+    double balance;
+
+public:
+
+    BankAccount();
+    BankAccount(int accNum, std::string holder, double initialBalance);
+
+    // rule of three
+    BankAccount(const BankAccount& other);            
+    BankAccount& operator=(const BankAccount& other); 
+    ~BankAccount();                                   
+
+    // operator Overloading
+    BankAccount& operator+=(double amount); // Deposit
+    BankAccount& operator-=(double amount); // Withdrawal
+    bool operator==(const BankAccount& other) const;
+    bool operator<(const BankAccount& other) const;
+    bool operator>(const BankAccount& other) const;
+
+    // static utility
+    static void printAccount(const BankAccount& account);
+    static BankAccount createAccountFromInput();
+
+    double getBalance() const { return balance; }
+};
+
+#endif
